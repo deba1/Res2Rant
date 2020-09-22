@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "561471175213",
+    "firebase_url": "https://res2rant.firebaseio.com",
+    "project_id": "res2rant",
+    "storage_bucket": "res2rant.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561471175213:android:db4354d83c7e020496d6a4",
+        "android_client_info": {
+          "package_name": "com.deba1.res2rant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561471175213-k7mpml673bl5s4s29l7p8abm24890o30.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3NmDuBLhoNwrTcyrzByRz-f1sj13FOxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561471175213-k7mpml673bl5s4s29l7p8abm24890o30.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

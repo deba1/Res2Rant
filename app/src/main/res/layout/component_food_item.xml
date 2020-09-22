@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="7dp"
+    android:id="@+id/foodItemContainer">
+
+    <ImageView
+        android:id="@+id/foodItemImage"
+        android:layout_width="0dp"
+        android:layout_height="128dp"
+        android:layout_weight="4"
+        android:contentDescription="@string/image"
+        app:srcCompat="@drawable/ic_food" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:paddingLeft="15dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/foodItemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/foodItemDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="3"
+            android:maxLines="3"
+            android:text="@string/description"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/foodItemPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/price"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

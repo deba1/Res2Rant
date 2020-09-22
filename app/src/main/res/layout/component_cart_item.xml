@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/cart_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/cart_item_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/note" />
+
+    <TextView
+        android:id="@+id/cart_item_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/item_count"
+        android:textColor="#777676"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/cart_item_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/table_no" />
+</LinearLayout>

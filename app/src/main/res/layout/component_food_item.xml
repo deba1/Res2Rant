@@ -16,10 +16,11 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:paddingLeft="15dp"
         android:layout_height="match_parent"
         android:layout_weight="8"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp">
 
         <TextView
             android:id="@+id/foodItemName"
@@ -33,8 +34,8 @@
             android:id="@+id/foodItemDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minLines="3"
             android:maxLines="3"
+            android:minLines="3"
             android:text="@string/description"
             android:textSize="18sp" />
 

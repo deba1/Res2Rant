@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/customer_menu_foods"
             android:actionLayout="@layout/fragment_foods"
             android:icon="@drawable/ic_fastfood"
             android:title="@string/menu_foods" />
         <item
+            android:id="@+id/customer_menu_orders"
+            android:actionLayout="@layout/fragment_my_orders"
+            android:icon="@drawable/ic_orders"
+            android:title="@string/my_orders" />
+        <item
+            android:id="@+id/customer_menu_logout"
             android:icon="@drawable/ic_logout"
             android:title="@string/logout" />
     </group>

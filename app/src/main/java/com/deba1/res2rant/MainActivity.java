@@ -47,26 +47,30 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 User user = task.getResult().toObject(User.class);
                                 assert user != null;
+                                Intent intent = null;
                                 switch (user.role) {
                                     case "ADMIN":
-                                        startActivity(new Intent(MainActivity.this, AdminDashboard.class));
+                                        intent = new Intent(MainActivity.this, AdminDashboard.class);
                                         break;
                                     case "CHEF":
-                                        startActivity(new Intent(MainActivity.this, ChefActivity.class));
+                                        intent = new Intent(MainActivity.this, ChefActivity.class);
                                         break;
                                     case "CUSTOMER":
-                                        startActivity(new Intent(MainActivity.this, CustomerActivity.class));
+                                        intent = new Intent(MainActivity.this, CustomerActivity.class);
                                         break;
                                     default:
                                 }
-                                finish();
+                                assert intent != null;
+                                intent.putExtra("name", user.name);
+                                intent.putExtra("email", user.email);
+                                startActivity(intent);
                             }
                             else {
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 intent.putExtra("error", task.getException().getMessage());
                                 startActivity(intent);
-                                finish();
                             }
+                            finish();
                         }
                     });
         }

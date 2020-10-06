@@ -5,6 +5,8 @@
     <string name="register">Register</string>
     <string name="register_full">Register as New User</string>
     <string name="login_full">Login as Existing User</string>
+    <string name="network_error">Network Error!</string>
+
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="retype_pass">Re-type Password</string>
@@ -22,6 +24,7 @@
     <string name="nav_header_subtitle">Sub Title</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="my_profile">My Profile</string>
 
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_foods">Foods</string>
@@ -58,6 +61,7 @@
     <string name="add_to_cart">Add to Cart</string>
     <string name="cart_added">Added to Cart</string>
 
+    <string name="my_orders">My Orders</string>
     <string name="confirm_order">Confirm Order</string>
     <string name="total_default">Total: ৳ 0</string>
     <string name="confirm_message">This is a placeholder for a payment gateway where payment methods can be chosen.</string>
@@ -66,4 +70,14 @@
     <string name="order_placed_success">Order Placed Successfully!</string>
     <string name="order_placed_fail">Failed to Place Order!</string>
 
+    <string name="placeholder_date">Date: {{ Date }}</string>
+    <string name="placeholder_status">{{ Status }}</string>
+
+    <string name="orders">Orders</string>
+    <string name="change_status">Change Status</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="total_orders">Total Orders:</string>
+    <string name="zero">0</string>
+    <string name="total_earning">Total Earning:</string>
 </resources>

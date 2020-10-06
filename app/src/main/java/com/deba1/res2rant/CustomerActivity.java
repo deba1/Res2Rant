@@ -13,13 +13,16 @@ import android.view.MenuItem;
 
 import com.deba1.res2rant.ui.cart.MyCartFragment;
 import com.deba1.res2rant.ui.customer.FoodMenuFragment;
+import com.deba1.res2rant.ui.order.MyOrdersFragment;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
 public class CustomerActivity extends AppCompatActivity {
 
     NavigationView navView;
+    FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,19 @@ public class CustomerActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FoodMenuFragment());
+                switch (item.getItemId()) {
+                    case R.id.customer_menu_foods:
+                        transaction.replace(R.id.fragment_container, new FoodMenuFragment());
+                        break;
+                    case R.id.customer_menu_orders:
+                        transaction.replace(R.id.fragment_container, new MyOrdersFragment());
+                        break;
+                    case R.id.customer_menu_logout:
+                        auth.signOut();
+                        finish();
+                        break;
+                    default:
+                }
                 transaction.commit();
                 drawer.closeDrawers();
                 return false;

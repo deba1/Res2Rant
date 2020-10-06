@@ -3,11 +3,13 @@ package com.deba1.res2rant.ui.cart;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deba1.res2rant.R;
 import com.deba1.res2rant.models.Cart;
 
+import java.io.File;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -15,12 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHolder> {
     private List<Cart.FoodItem> items;
+    private MyCartFragment fragment;
     //private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView foodNameView;
         public TextView noteView;
-        //public ImageView foodItemImage;
+        public ImageView foodItemImage;
         public TextView countView;
         public TextView tableNoView;
         public View layout;
@@ -30,7 +33,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
             layout = v;
             foodNameView = v.findViewById(R.id.cart_item_title);
             noteView = v.findViewById(R.id.cart_item_note);
-            //foodItemImage = v.findViewById(R.id.foodItemImage);
+            foodItemImage = v.findViewById(R.id.cart_item_image);
             countView = v.findViewById(R.id.cart_item_count);
             tableNoView = v.findViewById(R.id.cart_item_table);
         }
@@ -53,6 +56,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
 
     public CartItemAdapter(List<Cart.FoodItem> foodList, MyCartFragment manager) {
         items = foodList;
+        fragment = manager;
     }
 
     @NonNull
@@ -72,6 +76,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         if (position%2==0)
             holder.layout.setBackgroundResource(R.drawable.food_item_background_even);
         else holder.layout.setBackgroundResource(R.drawable.food_item_background_odd);
+        //File cacheDir = new File(fragment.getContext().getCacheDir(), "foodThumbs");
+        //if (!cacheDir.exists())
+            //cacheDir.mkdir();
+        //final File file = new File(cacheDir, items.get(position).id);
     }
 
     @Override

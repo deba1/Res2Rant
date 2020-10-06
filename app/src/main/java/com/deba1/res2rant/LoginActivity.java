@@ -76,6 +76,10 @@ public class LoginActivity extends AppCompatActivity {
                                                         startActivity(new Intent(LoginActivity.this, AdminDashboard.class));
                                                         finish();
                                                         break;
+                                                    case "CHEF":
+                                                        startActivity(new Intent(LoginActivity.this, ChefActivity.class));
+                                                        finish();
+                                                        break;
                                                     case "CUSTOMER":
                                                         startActivity(new Intent(LoginActivity.this, CustomerActivity.class));
                                                         finish();

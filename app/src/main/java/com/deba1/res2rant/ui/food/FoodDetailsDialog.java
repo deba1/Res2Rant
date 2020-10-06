@@ -37,9 +37,11 @@ public class FoodDetailsDialog extends DialogFragment {
     private Drawable foodImage;
     private final int SELECT_FOOD_IMAGE = 10011;
     private View view;
+    private View parentView;
     private Uri foodImageUri = null;
 
-    public FoodDetailsDialog(String foodId, String foodName, String foodDesc, Drawable foodImage, float foodPrice) {
+    public FoodDetailsDialog(View parent, String foodId, String foodName, String foodDesc, Drawable foodImage, float foodPrice) {
+        this.parentView = parent;
         this.foodId = foodId;
         this.foodName = foodName;
         this.foodDesc = foodDesc;
@@ -88,7 +90,7 @@ public class FoodDetailsDialog extends DialogFragment {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Snackbar.make(view, R.string.food_deleted, BaseTransientBottomBar.LENGTH_SHORT).show();
+                                Snackbar.make(parentView, R.string.food_deleted, BaseTransientBottomBar.LENGTH_SHORT).show();
                             }
                         });
             }
@@ -111,14 +113,14 @@ public class FoodDetailsDialog extends DialogFragment {
                                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                 @Override
                                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                    Snackbar.make(view, R.string.image_upload_success, BaseTransientBottomBar.LENGTH_LONG)
+                                                    Snackbar.make(parentView, R.string.image_upload_success, BaseTransientBottomBar.LENGTH_LONG)
                                                             .show();
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Snackbar.make(view, R.string.image_upload_fail, BaseTransientBottomBar.LENGTH_LONG)
+                                                    Snackbar.make(parentView, R.string.image_upload_fail, BaseTransientBottomBar.LENGTH_LONG)
                                                             .show();
                                                 }
                                             });

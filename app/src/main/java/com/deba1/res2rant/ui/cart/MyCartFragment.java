@@ -111,6 +111,7 @@ public class MyCartFragment extends Fragment {
                         order.orderedOn = Timestamp.now();
                         order.status = OrderState.COOKING.toString();
                         order.userId = auth.getUid();
+                        order.price = totalAmount;
                         db.collection("orders")
                                 .document()
                                 .set(order)

@@ -25,6 +25,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:text="@string/name"/>
     <TextView
+        android:id="@+id/nav_user_sub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_subtitle"

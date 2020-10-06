@@ -119,7 +119,7 @@ public class FoodItemDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (table != 0) {
-                    Cart.CartItem cartItem = new Cart.CartItem(foodId, foodCount, orderNote.getText().toString(), tableNo.getSelectedItem().toString());
+                    Cart.CartItem cartItem = new Cart.CartItem(foodId, foodName, foodCount, orderNote.getText().toString(), tableNo.getSelectedItem().toString());
                     db.collection("carts")
                             .document(auth.getUid())
                             .update("items", FieldValue.arrayUnion(cartItem))
@@ -127,9 +127,9 @@ public class FoodItemDialog extends DialogFragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Snackbar.make(view, R.string.cart_added, BaseTransientBottomBar.LENGTH_SHORT).show();
+                                        Snackbar.make(view.getRootView(), R.string.cart_added, BaseTransientBottomBar.LENGTH_SHORT).show();
                                     } else {
-                                        Snackbar.make(view, task.getException().getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
+                                        Snackbar.make(view.getRootView(), task.getException().getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
                                     }
                                 }
                             });

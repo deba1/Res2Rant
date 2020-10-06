@@ -88,7 +88,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
                         Drawable image = Drawable.createFromStream(stream, "foodImage");
                         holder.foodItemImage.setImageDrawable(image);
 
-                        final FoodDetailsDialog dialogFragment = new FoodDetailsDialog(foods.get(position).id, foods.get(position).name, foods.get(position).description, holder.foodItemImage.getDrawable(), foods.get(position).price);
+                        final FoodDetailsDialog dialogFragment = new FoodDetailsDialog(fragmentManager.getView(), foods.get(position).id, foods.get(position).name, foods.get(position).description, holder.foodItemImage.getDrawable(), foods.get(position).price);
 
                         holder.layout.setOnClickListener(new View.OnClickListener() {
                             @Override

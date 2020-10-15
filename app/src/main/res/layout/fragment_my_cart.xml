@@ -24,7 +24,8 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar">
+        app:layout_constraintTop_toBottomOf="@+id/progressBar"
+        tools:listitem="@layout/component_cart_item">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -46,6 +47,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/total_default" />
+
+        <TextView
+            android:id="@+id/cartDiscount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:textColor="@color/errorTextColor"
+            android:textSize="12sp"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/cart_confirm_button"

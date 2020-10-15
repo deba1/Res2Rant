@@ -4,10 +4,12 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorItemBorder">#9FA8DA</color>
-    <color name="colorItemBackgroundEven">#FFFFFF</color>
-    <color name="colorItemBackgroundOdd">#E8E8E8</color>
+    <color name="buttonStripEnabled">#E8E8E8</color>
+    <color name="buttonStripDisabled">#FFFFFF</color>
+    <color name="buttonStripPressed">#D0D0D0</color>
     <color name="errorTextColor">#d32f2f</color>
     <color name="textGray">#FF777676</color>
     <color name="header_text">#1A237E</color>
     <color name="textGreen">#085703</color>
+    <color name="colorTextDark">#ECECEC</color>
 </resources>

@@ -10,7 +10,9 @@ public class Cart {
         public String note;
         public String table;
         public String foodName;
+
         public CartItem() {}
+
         public CartItem(String foodId, String foodName, int count, String note, String table) {
             this.foodId = foodId;
             this.foodName = foodName;
@@ -18,17 +20,11 @@ public class Cart {
             this.note = note;
             this.table = table;
         }
-    }
-    public static class FoodItem {
-        public String foodName;
-        public String note;
-        public int count;
-        public String table;
-        public float price;
-        public FoodItem(Food food, int count, String note, String table) {
+
+        public CartItem(Food food, int count, String note, String table) {
+            this.foodId = food.id;
             this.foodName = food.name;
             this.count = count;
-            this.price = food.price * count;
             this.note = note;
             this.table = table;
         }

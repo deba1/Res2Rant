@@ -1,44 +1,68 @@
 package com.deba1.res2rant.ui.customer;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.util.Log;
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deba1.res2rant.AppHelper;
 import com.deba1.res2rant.R;
 import com.deba1.res2rant.models.Food;
-import com.deba1.res2rant.ui.common.EditDialogBox;
-import com.deba1.res2rant.ui.customer.FoodMenuFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class FoodMenuListAdapter extends RecyclerView.Adapter<FoodMenuListAdapter.ViewHolder> {
+public class FoodMenuListAdapter extends RecyclerView.Adapter<FoodMenuListAdapter.ViewHolder> implements Filterable {
     private List<Food> foods;
-    private FoodMenuFragment fragmentManager;
+    private List<Food> foodsFiltered;
+    private Fragment fragmentManager;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String keyword = charSequence.toString();
+                if (keyword.isEmpty())
+                    foodsFiltered = foods;
+                else {
+                    List<Food> filteredList = new ArrayList<>();
+                    for (Food row : foods) {
+                        if (row.name.toLowerCase().contains(keyword.toLowerCase()))
+                            filteredList.add(row);
+                    }
+                    foodsFiltered = filteredList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = foodsFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                foodsFiltered = (ArrayList<Food>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView foodItemName;
         public TextView foodItemDesc;
         public ImageView foodItemImage;
@@ -60,12 +84,18 @@ public class FoodMenuListAdapter extends RecyclerView.Adapter<FoodMenuListAdapte
         notifyItemInserted(index);
     }
 
+    public void add(Food food) {
+        foods.add(food);
+        notifyDataSetChanged();
+    }
+
     public void remove(int index) {
         foods.remove(index);
         notifyItemRemoved(index);
     }
 
-    public FoodMenuListAdapter(List<Food> foodList, FoodMenuFragment manager) {
+    public FoodMenuListAdapter(List<Food> foodList, Fragment manager) {
+        this.foodsFiltered = foodList;
         foods = foodList;
         fragmentManager = manager;
     }
@@ -80,19 +110,20 @@ public class FoodMenuListAdapter extends RecyclerView.Adapter<FoodMenuListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        holder.foodItemName.setText(foods.get(position).name);
-        holder.foodItemDesc.setText(foods.get(position).description);
-        holder.foodItemPrice.setText(String.format("৳ %s", foods.get(position).price));
-        if (position%2==0)
+        final Food selectedFood = this.foodsFiltered.get(position);
+        holder.foodItemName.setText(selectedFood.name);
+        holder.foodItemDesc.setText(selectedFood.description);
+        holder.foodItemPrice.setText(String.format("৳ %s", selectedFood.price));
+        /*if (position%2==0)
             holder.layout.setBackgroundResource(R.drawable.food_item_background_even);
-        else holder.layout.setBackgroundResource(R.drawable.food_item_background_odd);
+        else holder.layout.setBackgroundResource(R.drawable.bg_item_disabled);*/
 
         File cacheDir = new File(fragmentManager.getContext().getCacheDir(), "foodThumbs");
         if (!cacheDir.exists())
             cacheDir.mkdir();
-        final File file = new File(cacheDir, foods.get(position).id);
+        final File file = new File(cacheDir, selectedFood.id);
         if (!file.exists()) {
-            storage.getReference(foods.get(position).imagePath)
+            storage.getReference(selectedFood.imagePath)
                 .getBytes(2 * 1024 * 1024)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -101,8 +132,22 @@ public class FoodMenuListAdapter extends RecyclerView.Adapter<FoodMenuListAdapte
                             FileOutputStream outputStream = new FileOutputStream(file);
                             outputStream.write(bytes);
                             AppHelper.setDrawable(holder.foodItemImage, file.getPath());
-                            FoodItemDialog foodItemDialog = new FoodItemDialog(foods.get(position), holder.foodItemImage.getDrawable());
-                            AppHelper.setDialogEvent(holder.layout, fragmentManager.getParentFragmentManager(), foodItemDialog);
+                            if (selectedFood.available) {
+                                FoodItemDialog foodItemDialog = new FoodItemDialog(fragmentManager.getContext(), selectedFood, holder.foodItemImage.getDrawable());
+                                AppHelper.setDialogEvent(holder.layout, fragmentManager.getParentFragmentManager(), foodItemDialog);
+                            }
+                            else {
+                                holder.layout.setBackgroundColor(Color.GRAY);
+                                holder.layout.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        AlertDialog.Builder alert = new AlertDialog.Builder(fragmentManager.getContext());
+                                        alert.setMessage(R.string.food_unavailable);
+                                        alert.setNegativeButton(R.string.ok, null);
+                                        alert.show();
+                                    }
+                                });
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -116,13 +161,27 @@ public class FoodMenuListAdapter extends RecyclerView.Adapter<FoodMenuListAdapte
         }
         else {
             AppHelper.setDrawable(holder.foodItemImage, file.getPath());
-            FoodItemDialog foodItemDialog = new FoodItemDialog(foods.get(position), holder.foodItemImage.getDrawable());
-            AppHelper.setDialogEvent(holder.layout, fragmentManager.getParentFragmentManager(), foodItemDialog);
+            if (selectedFood.available) {
+                FoodItemDialog foodItemDialog = new FoodItemDialog(fragmentManager.getContext(), selectedFood, holder.foodItemImage.getDrawable());
+                AppHelper.setDialogEvent(holder.layout, fragmentManager.getParentFragmentManager(), foodItemDialog);
+            }
+            else {
+                holder.layout.setBackgroundColor(Color.GRAY);
+                holder.layout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(fragmentManager.getContext());
+                        alert.setMessage(R.string.food_unavailable);
+                        alert.setNegativeButton(R.string.ok, null);
+                        alert.show();
+                    }
+                });
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return foods.size();
+        return foodsFiltered.size();
     }
 }

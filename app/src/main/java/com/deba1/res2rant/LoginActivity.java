@@ -1,117 +1,195 @@
 package com.deba1.res2rant;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.deba1.res2rant.models.Cart;
+import com.deba1.res2rant.models.User;
+import com.deba1.res2rant.models.UserRole;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AdditionalUserInfo;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private EditText emailField, passwordField;
+    private PhoneAuthProvider sms = PhoneAuthProvider.getInstance();
+    private EditText otpField, mobileField;
+    private Button sendOtpButton, loginButton;
+    private String mVerificationId;
     private ProgressBar progressBar;
-    FirebaseUser user = firebaseAuth.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        boolean newRegister = false;
-        if (getIntent().hasExtra("ref"))
-            newRegister = getIntent().getStringExtra("ref").equals("new_user");
-        if (newRegister)
-            Snackbar.make(findViewById(R.id.snackbar), R.string.register_success, BaseTransientBottomBar.LENGTH_SHORT).show();
 
-        emailField = findViewById(R.id.editTextTextEmailAddress);
-        passwordField = findViewById(R.id.editTextTextPassword);
+        mobileField = findViewById(R.id.login_mobile);
+        sendOtpButton = findViewById(R.id.login_otp_button);
+        otpField = findViewById(R.id.login_otp);
         progressBar = findViewById(R.id.loginProgressBar);
-        final Button loginButton = findViewById(R.id.loginButton);
-        final TextView registerButton = findViewById(R.id.registerTextLink);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
-        });
-
+        loginButton = findViewById(R.id.loginButton);
+        loginButton.setEnabled(false);
+        sendOtpButton.setOnClickListener(new SendOTP());
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View view) {
+            public void onClick(View view) {
                 loginButton.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
-                firebaseAuth.signInWithEmailAndPassword(emailField.getText().toString().trim(), passwordField.getText().toString())
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                user = authResult.getUser();
-                                db.collection("users")
-                                        .document(user.getUid())
-                                        .get()
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot snapshot) {
-                                                loginButton.setVisibility(View.VISIBLE);
-                                                progressBar.setVisibility(View.GONE);
-                                                String role = snapshot.getString("role");
-                                                if (role==null) role = "";
-                                                switch (role) {
-                                                    case "ADMIN":
-                                                        startActivity(new Intent(LoginActivity.this, AdminDashboard.class));
-                                                        finish();
-                                                        break;
-                                                    case "CHEF":
-                                                        startActivity(new Intent(LoginActivity.this, ChefActivity.class));
-                                                        finish();
-                                                        break;
-                                                    case "CUSTOMER":
-                                                        startActivity(new Intent(LoginActivity.this, CustomerActivity.class));
-                                                        finish();
-                                                        break;
-                                                    default:
-                                                        firebaseAuth.signOut();
-                                                        Snackbar.make(view, "User not assigned to any role!", BaseTransientBottomBar.LENGTH_LONG).show();
-                                                        loginButton.setVisibility(View.VISIBLE);
-                                                        progressBar.setVisibility(View.GONE);
-                                                }
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                firebaseAuth.signOut();
-                                                Snackbar.make(view, "Something went wrong! "+e.getMessage(), BaseTransientBottomBar.LENGTH_LONG).show();
-                                                loginButton.setVisibility(View.VISIBLE);
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Snackbar.make(view, "Something went wrong! "+e.getMessage(), BaseTransientBottomBar.LENGTH_LONG).show();
-                                loginButton.setVisibility(View.VISIBLE);
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otpField.getText().toString());
+                signInWithPhoneAuthCredential(credential);
             }
         });
+    }
+
+    public void redirectToDashboard(@Nullable User user) {
+        assert user != null;
+        if (user.role.equals(UserRole.CUSTOMER.name())) {
+            Intent intent = new Intent(LoginActivity.this, CustomerActivity.class);
+            intent.putExtra("name", user.name);
+            intent.putExtra("email", user.mobileNo);
+            startActivity(intent);
+            finish();
+        }
+        else {
+            AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+            alert.setTitle(R.string.customer_only);
+            alert.setMessage(R.string.customer_only_ex);
+            alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    firebaseAuth.signOut();
+                    finish();
+                }
+            });
+            alert.show();
+        }
+    }
+
+    private class SendOTP implements View.OnClickListener {
+        private long timeout;
+
+        public SendOTP() {
+            this.timeout = 60;
+        }
+
+        @Override
+        public void onClick(final View view) {
+            String mobileNo = mobileField.getText().toString();
+            sms.verifyPhoneNumber(
+                    mobileNo,
+                    timeout,
+                    TimeUnit.SECONDS,
+                    LoginActivity.this,
+                    new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                        @Override
+                        public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                            mVerificationId = s;
+                            sendOtpButton.setText(R.string.resend_otp);
+                            sendOtpButton.setEnabled(false);
+                            loginButton.setEnabled(true);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendOtpButton.setEnabled(true);
+                                }
+                            }, 15000);
+                        }
+
+                        @Override
+                        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                            signInWithPhoneAuthCredential(phoneAuthCredential);
+                        }
+
+                        @Override
+                        public void onVerificationFailed(@NonNull FirebaseException e) {
+                            Snackbar.make(view, R.string.otp_fail, BaseTransientBottomBar.LENGTH_SHORT).show();
+                        }
+                    }
+            );
+        }
+    }
+
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        firebaseAuth.signInWithCredential(credential)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        final FirebaseUser firebaseUser = authResult.getUser();
+                        assert firebaseUser != null;
+                        AdditionalUserInfo userInfo = authResult.getAdditionalUserInfo();
+                        assert userInfo != null;
+                        if (userInfo.isNewUser()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                            builder.setTitle(R.string.register_full);
+                            View alertView = View.inflate(LoginActivity.this, R.layout.dialog_user_register, null);
+                            builder.setView(alertView);
+                            builder.setCancelable(false);
+
+                            final EditText fullName = alertView.findViewById(R.id.register_name);
+                            Button registerButton = alertView.findViewById(R.id.register_button);
+                            registerButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    User user = new User();
+                                    user.mobileNo = firebaseUser.getPhoneNumber();
+                                    user.name = fullName.getText().toString();
+                                    user.role = UserRole.CUSTOMER.toString();
+                                    db.collection("users")
+                                            .document(firebaseUser.getUid())
+                                            .set(user);
+                                    db.collection("carts")
+                                            .document(firebaseUser.getUid())
+                                            .set(new Cart());
+                                    redirectToDashboard(user);
+                                }
+                            });
+                            builder.show();
+                        }
+                        else {
+                            db.collection("users")
+                                    .document(firebaseUser.getUid())
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot snapshot) {
+                                            User user = new User(snapshot);
+                                            redirectToDashboard(user);
+                                        }
+                                    });
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(LoginActivity.this, R.string.otp_fail, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

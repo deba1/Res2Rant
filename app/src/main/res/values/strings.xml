@@ -1,19 +1,31 @@
 <resources>
     <string name="app_name">Res2rant</string>
     <string name="ok">OK</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
-    <string name="register_full">Register as New User</string>
-    <string name="login_full">Login as Existing User</string>
-    <string name="network_error">Network Error!</string>
 
-    <string name="email">E-mail</string>
-    <string name="password">Password</string>
-    <string name="retype_pass">Re-type Password</string>
-    <string name="repeat_pass_error">The passwords did\'t match!</string>
+    <!-- User Field Names -->
     <string name="full_name">Full Name</string>
     <string name="mobile_no">Mobile No.</string>
+    <string name="otp">OTP</string>
+    <string name="email">E-mail</string>
+
+    <!-- Login -->
+    <string name="login">Login</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="register">Register</string>
+    <string name="register_full">Register as New User</string>
+
+    <!-- Error Messages -->
+    <string name="network_error">Network Error!</string>
+    <string name="error_default">Something went wrong!</string>
+    <string name="customer_only">Customer Only</string>
+    <string name="customer_only_ex">Please Login with Manager App</string>
+    <string name="repeat_pass_error">The passwords did\'t match!</string>
     <string name="login_fail">Login Failed</string>
+    <string name="otp_fail">Could not send OTP</string>
+    <string name="food_unavailable">The Selected food in not available at this moment.</string>
+
+
     <string name="admin">Admin</string>
     <string name="admin_dashboard">Admin Dashboard</string>
     <string name="register_success">Registration Successful.\nPlease login with your email and password.</string>
@@ -25,6 +37,10 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="my_profile">My Profile</string>
+    <string name="profile_updated">Profile Updated!</string>
+    <string name="password_updated">Password Updated!</string>
+    <string name="error_old_pass">Old Password did not match!</string>
+    <string name="error_empty">Empty text not allowed!</string>
 
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_foods">Foods</string>
@@ -60,6 +76,7 @@
     <string name="note_ex">Leave a note</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="cart_added">Added to Cart</string>
+    <string name="total_price_placeholder">Total: ৳ %.2f</string>
 
     <string name="my_orders">My Orders</string>
     <string name="confirm_order">Confirm Order</string>
@@ -80,4 +97,33 @@
     <string name="total_orders">Total Orders:</string>
     <string name="zero">0</string>
     <string name="total_earning">Total Earning:</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="change_password">Change Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="discount">Discount</string>
+    <string name="discount_tag">%.0f%% off.</string>
+    <string name="notification">Notification</string>
+    <string name="date">Date</string>
+    <string name="ordered_on">Ordered on</string>
+    <string name="pending">Pending</string>
+    <string name="cooking">Cooking</string>
+    <string name="completed">Completed</string>
+    <string name="canceled">Canceled</string>
+    <string name="status">Status</string>
+    <string name="top_foods">Top Foods</string>
+    <string name="top_sale">Top Ordered</string>
 </resources>

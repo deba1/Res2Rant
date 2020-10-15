@@ -8,16 +8,20 @@ import android.widget.TextView;
 
 import com.deba1.res2rant.R;
 import com.deba1.res2rant.models.Cart;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.File;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHolder> {
-    private List<Cart.FoodItem> items;
-    private MyCartFragment fragment;
+    private final List<Cart.CartItem> items;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     //private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,12 +43,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         }
     }
 
-    public void add(Cart.FoodItem food) {
+    public void add(Cart.CartItem food) {
         items.add(getItemCount(), food);
         notifyItemChanged(getItemCount());
     }
 
-    public void add(int index, Cart.FoodItem food) {
+    public void add(int index, Cart.CartItem food) {
         items.add(index, food);
         notifyItemInserted(index);
     }
@@ -54,9 +58,20 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         notifyItemRemoved(index);
     }
 
-    public CartItemAdapter(List<Cart.FoodItem> foodList, MyCartFragment manager) {
+    public void deleteItem(final int index) {
+        db.collection("/carts")
+                .document(auth.getUid())
+                .update("items", FieldValue.arrayRemove(items.get(index)))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        remove(index);
+                    }
+                });
+    }
+
+    public CartItemAdapter(List<Cart.CartItem> foodList) {
         items = foodList;
-        fragment = manager;
     }
 
     @NonNull
@@ -73,9 +88,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         holder.noteView.setText(items.get(position).note);
         holder.countView.setText(String.format("Count: %s", items.get(position).count));
         holder.tableNoView.setText(items.get(position).table);
-        if (position%2==0)
+
+        /*if (position%2==0)
             holder.layout.setBackgroundResource(R.drawable.food_item_background_even);
-        else holder.layout.setBackgroundResource(R.drawable.food_item_background_odd);
+        else holder.layout.setBackgroundResource(R.drawable.bg_item_disabled);*/
         //File cacheDir = new File(fragment.getContext().getCacheDir(), "foodThumbs");
         //if (!cacheDir.exists())
             //cacheDir.mkdir();

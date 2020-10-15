@@ -1,49 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/foodItemContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="7dp"
-    android:id="@+id/foodItemContainer">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/foodItemImage"
-        android:layout_width="0dp"
-        android:layout_height="128dp"
-        android:layout_weight="4"
+        android:layout_width="@dimen/thumbnail_size"
+        android:layout_height="@dimen/thumbnail_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_food" />
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/foodItemName"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8"
-        android:orientation="vertical"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/foodItemImage"
+        app:layout_constraintTop_toTopOf="@+id/foodItemImage" />
 
-        <TextView
-            android:id="@+id/foodItemName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/name"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/foodItemDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:lines="1"
+        android:text="@string/description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/foodItemPrice"
+        app:layout_constraintTop_toBottomOf="@+id/foodItemPrice" />
 
-        <TextView
-            android:id="@+id/foodItemDesc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:minLines="3"
-            android:text="@string/description"
-            android:textSize="18sp" />
+    <TextView
+        android:id="@+id/foodItemPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/price"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/foodItemName"
+        app:layout_constraintTop_toBottomOf="@+id/foodItemName" />
 
-        <TextView
-            android:id="@+id/foodItemPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/price"
-            android:textStyle="bold" />
-    </LinearLayout>
-</LinearLayout>
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/foodItemImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

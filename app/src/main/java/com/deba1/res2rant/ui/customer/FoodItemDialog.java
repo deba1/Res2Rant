@@ -2,10 +2,9 @@ package com.deba1.res2rant.ui.customer;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,14 +13,13 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.deba1.res2rant.R;
 import com.deba1.res2rant.models.Cart;
 import com.deba1.res2rant.models.Food;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,8 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
-import static android.app.Activity.RESULT_OK;
 
 public class FoodItemDialog extends DialogFragment {
     private String foodId;
@@ -43,11 +39,13 @@ public class FoodItemDialog extends DialogFragment {
     private TextView tableLabel;
     private int foodCount = 1;
     private int table = 0;
+    private Context context;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
-    public FoodItemDialog(Food food, Drawable foodImage) {
-        foodId = food.id;
+    public FoodItemDialog(Context context, Food food, Drawable foodImage) {
+        this.context = context;
+        this.foodId = food.id;
         this.foodName = food.name;
         this.foodDesc = food.description;
         this.foodPrice = food.price;
@@ -90,10 +88,8 @@ public class FoodItemDialog extends DialogFragment {
         itemSelectorView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (i < 1)
-                    seekBar.setProgress(1);
-                itemCounterView.setText(String.valueOf(i));
-                foodCount = i;
+                foodCount = i+1;
+                itemCounterView.setText(String.valueOf(foodCount+1));
             }
 
             @Override
@@ -127,9 +123,9 @@ public class FoodItemDialog extends DialogFragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Snackbar.make(view.getRootView(), R.string.cart_added, BaseTransientBottomBar.LENGTH_SHORT).show();
+                                        Toast.makeText(context, R.string.cart_added, Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Snackbar.make(view.getRootView(), task.getException().getMessage(), BaseTransientBottomBar.LENGTH_SHORT).show();
+                                        Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -141,4 +137,6 @@ public class FoodItemDialog extends DialogFragment {
         });
         return builder.create();
     }
+
+
 }

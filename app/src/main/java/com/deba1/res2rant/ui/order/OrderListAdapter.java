@@ -19,12 +19,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.ViewHolder> {
-    private List<Order> allOrders, ordersFiltered;
-    private Context context;
-    private Fragment fragment;
+    private final List<Order> ordersFiltered;
+    private final Fragment fragment;
 
     public OrderListAdapter(List<Order> allOrders, Fragment fragment) {
-        this.allOrders = allOrders;
         this.ordersFiltered = allOrders;
         this.fragment = fragment;
     }
@@ -37,8 +35,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(this.context);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.component_order_item, parent, false);
         return new ViewHolder(v);
     }

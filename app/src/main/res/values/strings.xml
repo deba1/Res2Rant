@@ -24,6 +24,7 @@
     <string name="login_fail">Login Failed</string>
     <string name="otp_fail">Could not send OTP</string>
     <string name="food_unavailable">The Selected food in not available at this moment.</string>
+    <string name="order_exist_false">Order does not exist</string>
 
 
     <string name="admin">Admin</string>

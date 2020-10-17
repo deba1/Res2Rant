@@ -3,9 +3,10 @@ package com.deba1.res2rant.models;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Order {
+public class Order implements Serializable {
     public String Id;
     public List<Cart.CartItem> cart;
     public String userId;

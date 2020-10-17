@@ -1,10 +1,11 @@
 package com.deba1.res2rant.models;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class Cart {
     public List<CartItem> items;
-    public static class CartItem {
+    public static class CartItem implements Serializable {
         public String foodId;
         public int count;
         public String note;

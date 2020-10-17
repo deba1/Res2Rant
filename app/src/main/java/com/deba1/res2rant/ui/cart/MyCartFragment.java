@@ -46,6 +46,7 @@ public class MyCartFragment extends Fragment {
     private int itemIndex = 0;
     private float discount = 0;
     private List<Cart.CartItem> cartItems;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

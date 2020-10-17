@@ -20,10 +20,18 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private final Handler handler = new Handler();
+    private Runnable runnable;
+    private final long delay = 15000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
+
+        OrderNotificationService.createNotificationChannel(this);
+
         if (firebaseAuth.getUid() == null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent = new Intent(MainActivity.this, CustomerActivity.class);
                                 intent.putExtra("name", user.name);
                                 intent.putExtra("email", user.mobileNo);
+                                checkUpdate();
                                 startActivity(intent);
                                 finish();
                             }
@@ -67,11 +76,28 @@ public class MainActivity extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            intent.putExtra("error", e.getMessage());
-                            startActivity(intent);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setMessage(e.getMessage());
+                            builder.setTitle("ERROR");
+                            builder.setNegativeButton("EXIT", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            });
                         }
                     });
         }
+    }
+
+    private void checkUpdate() {
+        final OrderNotificationService service = new OrderNotificationService(this);
+        handler.postDelayed(runnable = new Runnable() {
+            @Override
+            public void run() {
+                handler.postDelayed(runnable, delay);
+                service.checkUpdate();
+            }
+        }, delay);
     }
 }

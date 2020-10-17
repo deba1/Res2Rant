@@ -43,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button sendOtpButton, loginButton;
     private String mVerificationId;
     private ProgressBar progressBar;
+    private Handler handler = new Handler();
+    private Runnable runnable;
+    private long delay = 15000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, CustomerActivity.class);
             intent.putExtra("name", user.name);
             intent.putExtra("email", user.mobileNo);
+            checkUpdate();
             startActivity(intent);
             finish();
         }
@@ -191,5 +195,16 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, R.string.otp_fail, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void checkUpdate() {
+        final OrderNotificationService service = new OrderNotificationService(this);
+        handler.postDelayed(runnable = new Runnable() {
+            @Override
+            public void run() {
+                handler.postDelayed(runnable, delay);
+                service.checkUpdate();
+            }
+        }, delay);
     }
 }

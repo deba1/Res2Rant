@@ -127,4 +127,6 @@
     <string name="status">Status</string>
     <string name="top_foods">Top Foods</string>
     <string name="top_sale">Top Ordered</string>
+
+    <string name="reorder">Reorder</string>
 </resources>

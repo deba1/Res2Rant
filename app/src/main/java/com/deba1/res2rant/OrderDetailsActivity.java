@@ -2,6 +2,7 @@ package com.deba1.res2rant;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -27,22 +28,29 @@ public class OrderDetailsActivity extends Activity {
             builder.setMessage(R.string.order_exist_false);
             builder.setCancelable(false);
 
-            builder.setNegativeButton(R.string.ok, null);
+            builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
             builder.create().show();
-            finish();
+        }
+        else {
+            TextView dateView = findViewById(R.id.orderDate);
+            TextView statusView = findViewById(R.id.orderStatus);
+            RecyclerView cartList = findViewById(R.id.orderList);
+
+            OrderRaw order = (OrderRaw) intent.getSerializableExtra("order");
+            assert order != null;
+            dateView.setText(order.orderedOn);
+            statusView.setText(order.status);
+            cartList.setLayoutManager(new LinearLayoutManager(this));
+            cartList.setHasFixedSize(true);
+            CartItemAdapter itemAdapter = new CartItemAdapter(order.cart);
+            cartList.setAdapter(itemAdapter);
         }
 
-        TextView dateView = findViewById(R.id.orderSingleDate);
-        TextView statusView = findViewById(R.id.orderSingleStatus);
-        RecyclerView cartList = findViewById(R.id.orderSingleList);
 
-        OrderRaw order = (OrderRaw) intent.getSerializableExtra("order");
-        assert order != null;
-        dateView.setText(order.orderedOn);
-        statusView.setText(order.status);
-        cartList.setLayoutManager(new LinearLayoutManager(this));
-        cartList.setHasFixedSize(true);
-        CartItemAdapter itemAdapter = new CartItemAdapter(order.cart);
-        cartList.setAdapter(itemAdapter);
     }
 }

@@ -85,6 +85,10 @@ public class CustomerActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyCartFragment()).commit();
     }
 
+    public void openOrders(MenuItem item) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyOrdersFragment()).commit();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

@@ -24,4 +24,8 @@ public class Order implements Serializable {
         this.userId = o.userId;
         this.cart = o.cart;
     }
+
+    public boolean compareOrder(Order order) {
+        return this.status.equals(order.status);
+    }
 }

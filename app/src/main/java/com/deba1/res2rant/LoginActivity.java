@@ -15,8 +15,6 @@ import com.deba1.res2rant.models.User;
 import com.deba1.res2rant.models.UserRole;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AdditionalUserInfo;
 import com.google.firebase.auth.AuthResult;
@@ -36,16 +34,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private PhoneAuthProvider sms = PhoneAuthProvider.getInstance();
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final PhoneAuthProvider sms = PhoneAuthProvider.getInstance();
     private EditText otpField, mobileField;
-    private Button sendOtpButton, loginButton;
+    private Button loginButton, sendOtpButton;
     private String mVerificationId;
     private ProgressBar progressBar;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Runnable runnable;
-    private long delay = 15000;
+    private final long delay = 15000;
+    private final Handler otpHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +56,14 @@ public class LoginActivity extends AppCompatActivity {
         otpField = findViewById(R.id.login_otp);
         progressBar = findViewById(R.id.loginProgressBar);
         loginButton = findViewById(R.id.loginButton);
-        loginButton.setEnabled(false);
-        sendOtpButton.setOnClickListener(new SendOTP());
+
+        sendOtpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendOTP();
+            }
+        });
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,48 +100,43 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private class SendOTP implements View.OnClickListener {
-        private long timeout;
-
-        public SendOTP() {
-            this.timeout = 60;
-        }
-
-        @Override
-        public void onClick(final View view) {
-            String mobileNo = mobileField.getText().toString();
-            sms.verifyPhoneNumber(
-                    mobileNo,
-                    timeout,
-                    TimeUnit.SECONDS,
-                    LoginActivity.this,
-                    new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                        @Override
-                        public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                            mVerificationId = s;
-                            sendOtpButton.setText(R.string.resend_otp);
-                            sendOtpButton.setEnabled(false);
-                            loginButton.setEnabled(true);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sendOtpButton.setEnabled(true);
-                                }
-                            }, 15000);
-                        }
-
-                        @Override
-                        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                            signInWithPhoneAuthCredential(phoneAuthCredential);
-                        }
-
-                        @Override
-                        public void onVerificationFailed(@NonNull FirebaseException e) {
-                            Snackbar.make(view, R.string.otp_fail, BaseTransientBottomBar.LENGTH_SHORT).show();
-                        }
+    private void SendOTP() {
+        String mobileNo = mobileField.getText().toString();
+        sms.verifyPhoneNumber(
+                mobileNo,
+                60,
+                TimeUnit.SECONDS,
+                LoginActivity.this,
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                        mVerificationId = s;
+                        sendOtpButton.setText(R.string.resend_otp);
+                        sendOtpButton.setEnabled(false);
+                        otpHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendOtpButton.setEnabled(true);
+                            }
+                        }, 15000);
                     }
-            );
-        }
+
+                    @Override
+                    public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                        signInWithPhoneAuthCredential(phoneAuthCredential);
+                    }
+
+                    @Override
+                    public void onVerificationFailed(@NonNull FirebaseException e) {
+                        Toast.makeText(getApplicationContext(), "Sending OTP failed! \nCause: "+e.getMessage() , Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
+                        mVerificationId = s;
+                    }
+                }
+        );
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                                     User user = new User();
                                     user.mobileNo = firebaseUser.getPhoneNumber();
                                     user.name = fullName.getText().toString();
-                                    user.role = UserRole.CUSTOMER.toString();
+                                    user.role = UserRole.CUSTOMER.name();
                                     db.collection("users")
                                             .document(firebaseUser.getUid())
                                             .set(user);

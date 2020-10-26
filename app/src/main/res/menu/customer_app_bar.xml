@@ -4,6 +4,7 @@
 
     <item
         android:icon="@drawable/ic_notifications_none"
+        android:onClick="openOrders"
         android:title="@string/notification"
         app:showAsAction="ifRoom" />
     <item

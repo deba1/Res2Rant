@@ -2,22 +2,27 @@ package com.deba1.res2rant.ui.order;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deba1.res2rant.R;
+import com.deba1.res2rant.models.Cart;
 import com.deba1.res2rant.models.Order;
 import com.deba1.res2rant.models.OrderState;
 import com.deba1.res2rant.ui.cart.CartItemAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -29,9 +34,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class OrderItemDialog extends DialogFragment {
     private final Order order;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Spinner tableNoView;
+    private final Context context;
 
-    public OrderItemDialog(Order order) {
+    public OrderItemDialog(Context context, Order order) {
         this.order = order;
+        this.context = context;
     }
 
     @NonNull
@@ -42,6 +50,7 @@ public class OrderItemDialog extends DialogFragment {
         View builderView = getLayoutInflater().inflate(R.layout.dialog_order_items, null);
         TextView dateView = header.findViewById(R.id.orderSingleDate);
         TextView statusView = header.findViewById(R.id.orderSingleStatus);
+        tableNoView = header.findViewById(R.id.orderTableNo);
 
         String date = new SimpleDateFormat("dd/MM/yy - hh:mm aa", Locale.ENGLISH).format(order.orderedOn.toDate());
         dateView.setText(date);
@@ -81,17 +90,33 @@ public class OrderItemDialog extends DialogFragment {
                         newOrder.orderedOn = Timestamp.now();
                         newOrder.price = order.price;
                         newOrder.status = OrderState.PENDING.name();
-                        newOrder.cart = order.cart;
+                        if (tableNoView.getSelectedItemPosition() != 0) {
+                            newOrder.cart = new ArrayList<>();
+                            String tableNo = tableNoView.getSelectedItem().toString();
+                            for (Cart.CartItem item :
+                                    order.cart) {
+                                item.table = tableNo;
+                                newOrder.cart.add(item);
+                            }
+                        }
+                        else
+                            newOrder.cart = order.cart;
                         newOrder.userId = order.userId;
+
                         db.collection("orders")
                                 .add(newOrder)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
-                                        Toast.makeText(getContext(), R.string.order_placed_success, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, R.string.order_placed_success, Toast.LENGTH_SHORT).show();
                                     }
                                 })
-                                .addOnFailureListener(null);
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, R.string.order_placed_fail, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     }
                 });
                 builder.show();

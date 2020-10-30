@@ -24,10 +24,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 public class OrderNotificationService {
-    private Context context;
+    private final Context context;
     public final static String CHANNEL_ID = "OrderNotification";
     public final static int ORDER_NOTIFICATION_INTENT = 2021;
-    public static int NOTIFICATION_ID =10011;
+    public static int NOTIFICATION_ID = 10011;
     private final List<Order> newOrders, oldOrders;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 

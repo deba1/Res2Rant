@@ -50,7 +50,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment dialog = new OrderItemDialog(order);
+                DialogFragment dialog = new OrderItemDialog(fragment.getContext(), order);
                 dialog.show(fragment.getParentFragmentManager(), OrderItemDialog.class.getSimpleName());
             }
         });

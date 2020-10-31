@@ -71,7 +71,7 @@ public class OrderNotificationService {
                                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                                         .setSmallIcon(R.drawable.ic_orders)
                                         .setContentTitle("Order Updated")
-                                        .setContentText(String.format("Your order has been %s", order.status.toLowerCase()))
+                                        .setContentText(String.format("Your order has been %s", thisOrder.status.toLowerCase()))
                                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                         .setContentIntent(pendingIntent)
                                         .setAutoCancel(true);

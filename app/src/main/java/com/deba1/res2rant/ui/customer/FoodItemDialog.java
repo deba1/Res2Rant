@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +42,7 @@ public class FoodItemDialog extends DialogFragment {
     private int foodCount = 1;
     private int table = 0;
     private Context context;
+    private String beforeText;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
@@ -82,24 +85,44 @@ public class FoodItemDialog extends DialogFragment {
             }
         });
         orderNote = view.findViewById(R.id.food_menu_item_dialog_note);
-        SeekBar itemSelectorView = view.findViewById(R.id.food_menu_item_dialog_count);
-        final TextView itemCounterView = view.findViewById(R.id.food_menu_item_dialog_counter);
-
-        itemSelectorView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        Button plusButton = view.findViewById(R.id.food_qt_plus);
+        Button minusButton = view.findViewById(R.id.food_qt_minus);
+        final EditText qtField = view.findViewById(R.id.food_qt_number);
+        qtField.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                foodCount = i+1;
-                itemCounterView.setText(String.valueOf(foodCount+1));
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                beforeText = charSequence.toString();
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                int qt = Integer.parseInt(charSequence.toString());
+                if (qt>15 || qt<1)
+                    qtField.setText(beforeText);
+                else {
+                    foodCount = qt;
+                }
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void afterTextChanged(Editable editable) {
 
+            }
+        });
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (foodCount<15)
+                    foodCount++;
+                qtField.setText(String.format("%s", foodCount));
+            }
+        });
+        minusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (foodCount>1)
+                    foodCount--;
+                qtField.setText(String.format("%s", foodCount));
             }
         });
 

@@ -107,47 +107,27 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:labelFor="@id/food_qt_number"
             android:text="@string/item_count"
             android:textAlignment="textEnd"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/food_qt_plus"
             app:layout_constraintEnd_toEndOf="@+id/food_menu_table_label"
-            app:layout_constraintTop_toBottomOf="@+id/food_menu_table_label" />
+            app:layout_constraintTop_toTopOf="@+id/food_qt_plus" />
 
-        <SeekBar
-            android:id="@+id/food_menu_item_dialog_count"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:max="15"
-            android:progress="0"
-            app:layout_constraintEnd_toStartOf="@+id/food_menu_item_dialog_counter"
-            app:layout_constraintStart_toEndOf="@+id/textView9"
-            app:layout_constraintTop_toBottomOf="@+id/food_menu_item_dialog_table" />
-
-
-        <TextView
-            android:id="@+id/food_menu_item_dialog_counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/num1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/food_menu_item_dialog_table" />
 
         <TextView
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/note"
             android:textAlignment="textEnd"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/textView9"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            app:layout_constraintTop_toBottomOf="@+id/food_qt_plus" />
 
         <EditText
             android:id="@+id/food_menu_item_dialog_note"
@@ -163,7 +143,41 @@
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toBottomOf="@+id/food_menu_item_dialog_count" />
+            app:layout_constraintTop_toBottomOf="@+id/food_qt_plus" />
+
+        <Button
+            android:id="@+id/food_qt_plus"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/plus"
+            app:layout_constraintBottom_toBottomOf="@+id/food_qt_number"
+            app:layout_constraintStart_toEndOf="@+id/textView9" />
+
+        <EditText
+            android:id="@+id/food_qt_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="number"
+            android:text="@string/num1"
+            app:layout_constraintBottom_toBottomOf="@+id/food_qt_minus"
+            app:layout_constraintEnd_toStartOf="@+id/food_qt_minus"
+            app:layout_constraintStart_toEndOf="@+id/food_qt_plus"
+            app:layout_constraintTop_toTopOf="@+id/food_qt_minus"
+            android:importantForAutofill="no" />
+
+        <Button
+            android:id="@+id/food_qt_minus"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/minus"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/food_menu_item_dialog_table" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

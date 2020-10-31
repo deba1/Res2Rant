@@ -27,23 +27,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MyOrdersFragment extends Fragment {
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     private ProgressBar loading;
-    private RecyclerView listContainer;
     private OrderListAdapter mAdapter;
     private final List<Order> orders = new ArrayList<>();
 
     private final Handler handler = new Handler();
     private Runnable runnable;
-    private long delay = 15000;
+    private final long delay = 10000;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View mainView = inflater.inflate(R.layout.fragment_my_orders, container, false);
         loading = mainView.findViewById(R.id.my_orders_loading);
-        listContainer = mainView.findViewById(R.id.my_orders_list);
+        RecyclerView listContainer = mainView.findViewById(R.id.my_orders_list);
 
         listContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         listContainer.setHasFixedSize(true);

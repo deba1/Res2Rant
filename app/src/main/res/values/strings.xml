@@ -129,4 +129,6 @@
     <string name="top_sale">Top Ordered</string>
 
     <string name="reorder">Reorder</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
 </resources>

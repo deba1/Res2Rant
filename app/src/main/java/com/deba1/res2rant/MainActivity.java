@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final Handler handler = new Handler();
     private Runnable runnable;
-    private final long delay = 15000;
+    private final long delay = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

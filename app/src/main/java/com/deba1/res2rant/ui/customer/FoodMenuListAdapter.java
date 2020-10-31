@@ -28,10 +28,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FoodMenuListAdapter extends RecyclerView.Adapter<FoodMenuListAdapter.ViewHolder> implements Filterable {
-    private List<Food> foods;
+    private final List<Food> foods;
     private List<Food> foodsFiltered;
     private Fragment fragmentManager;
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     @Override
     public Filter getFilter() {

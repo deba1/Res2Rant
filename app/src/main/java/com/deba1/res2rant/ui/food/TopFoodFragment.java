@@ -37,9 +37,7 @@ public class TopFoodFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_top_foods, container, false);
         topSoldList = root.findViewById(R.id.top_foods_list);
         loading = root.findViewById(R.id.top_food_progressBar);
-        mAdapter = new FoodMenuListAdapter(foodList, TopFoodFragment.this);
         topSoldList.setLayoutManager(new LinearLayoutManager(getContext()));
-        topSoldList.setAdapter(mAdapter);
 
         db.collection("foods")
                 .orderBy("totalPurchase", Query.Direction.DESCENDING)
@@ -51,9 +49,10 @@ public class TopFoodFragment extends Fragment {
                         for (QueryDocumentSnapshot snapshot:
                         queryDocumentSnapshots){
                             Food food = new Food(snapshot);
-                            food.id = snapshot.getId();
                             foodList.add(food);
                         }
+                        mAdapter = new FoodMenuListAdapter(foodList, TopFoodFragment.this);
+                        topSoldList.setAdapter(mAdapter);
                         loading.setVisibility(View.GONE);
                     }
                 });

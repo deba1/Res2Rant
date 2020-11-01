@@ -67,10 +67,16 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loginButton.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otpField.getText().toString());
-                signInWithPhoneAuthCredential(credential);
+                if (mobileField.getText().toString().isEmpty())
+                    mobileField.setError("Mobile number is required");
+                else if (otpField.getText().toString().isEmpty())
+                    otpField.setError("OTP field can't be empty");
+                else {
+                    loginButton.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otpField.getText().toString());
+                    signInWithPhoneAuthCredential(credential);
+                }
             }
         });
     }
@@ -102,41 +108,45 @@ public class LoginActivity extends AppCompatActivity {
 
     private void SendOTP() {
         String mobileNo = mobileField.getText().toString();
-        sms.verifyPhoneNumber(
-                mobileNo,
-                60,
-                TimeUnit.SECONDS,
-                LoginActivity.this,
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    @Override
-                    public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                        mVerificationId = s;
-                        sendOtpButton.setText(R.string.resend_otp);
-                        sendOtpButton.setEnabled(false);
-                        otpHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendOtpButton.setEnabled(true);
-                            }
-                        }, 15000);
-                    }
+        if (mobileNo.isEmpty())
+            mobileField.setError("Mobile number is required!");
+        else {
+            sms.verifyPhoneNumber(
+                    mobileNo,
+                    60,
+                    TimeUnit.SECONDS,
+                    LoginActivity.this,
+                    new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                        @Override
+                        public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                            mVerificationId = s;
+                            sendOtpButton.setText(R.string.resend_otp);
+                            sendOtpButton.setEnabled(false);
+                            otpHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendOtpButton.setEnabled(true);
+                                }
+                            }, 15000);
+                        }
 
-                    @Override
-                    public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                        signInWithPhoneAuthCredential(phoneAuthCredential);
-                    }
+                        @Override
+                        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                            signInWithPhoneAuthCredential(phoneAuthCredential);
+                        }
 
-                    @Override
-                    public void onVerificationFailed(@NonNull FirebaseException e) {
-                        Toast.makeText(getApplicationContext(), "Sending OTP failed! \nCause: "+e.getMessage() , Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onVerificationFailed(@NonNull FirebaseException e) {
+                            Toast.makeText(getApplicationContext(), "Sending OTP failed! \nCause: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
 
-                    @Override
-                    public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
-                        mVerificationId = s;
+                        @Override
+                        public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
+                            mVerificationId = s;
+                        }
                     }
-                }
-        );
+            );
+        }
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
